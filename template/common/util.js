@@ -1,15 +1,40 @@
-import axios from 'axios';
-
-const instance = axios.create();
-
 function createAPI(baseURL) {
   return function (conf) {
     conf = conf || {};
-    return instance(Object.assign({}, {
-      url: conf.url,
-      baseURL: baseURL,
-      method: conf.method
-    }, conf.opts));
+    if (/.\/$/.test(baseURL)) {
+      baseURL = baseURL.substr(0, baseURL.lastIndexOf("/"));
+    }
+
+    if (!/^\//.test(conf.url)) {
+      conf.url = `/${conf.url}`;
+    }
+
+    return wx.request({
+      url: `${baseURL}${conf.url}`,
+      method: conf.method.toUpperCase(),
+      data: conf.data,
+      header: {
+        "Content-Type": "json",
+        ...conf.header
+      },
+      dataType: 'json',
+      success: function (res) {
+        if (res.statusCode !== 200) {
+          wx.showToast({
+            title: "请求失败"
+          })
+
+          return;
+        }
+
+        if (typeof conf.success === 'function') {
+          conf.success(res.data);
+        }
+      },
+      fail: function (res) {
+
+      }
+    })
   };
 }
 
@@ -26,7 +51,7 @@ function convertRESTAPI(url, opts) {
   return url;
 }
 
-export {
+module.exports = {
   createAPI,
   convertRESTAPI
 };

@@ -1,6 +1,6 @@
-easy-mock-template-axios
+easy-mock-template-wx-request
 ---
-基于 axios 的接口定义模板。
+基于微信小程序网络请求 wx.request 的接口定义模板。
 
 Documentation
 ---

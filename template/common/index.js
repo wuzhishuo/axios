@@ -1,5 +1,6 @@
-<% _.forEach(config.projects, function(project){ %>import * as {{$$.convertUrl(project.name)}} from './{{project.name}}';<% }) %>
+<% _.forEach(config.projects, function (project) { %>var {{ project.name } } = require('./{{$$.convertUrl(project.name)}}');<% }) %>
 
-export {<% _.forEach(config.projects, function(project, i){ %>
-  {{$$.convertUrl(project.name)}}<% if(config.projects.length - 1 !== i) { %>,<% } %><% }) %>
+  module.exports= {<% _.forEach(config.projects, function (project, i) { %>
+    {{ $$.convertUrl(project.name) }
+  }: {{ $$.convertUrl(project.name) }}<% if (config.projects.length - 1 !== i) { %>,<% } %><% }) %>
 };
