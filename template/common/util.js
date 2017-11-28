@@ -1,21 +1,21 @@
 function createAPI(baseURL) {
-  return function (conf) {
-    conf = conf || {};
+  return function (opts) {
+    opts = opts || {};
     if (/.\/$/.test(baseURL)) {
       baseURL = baseURL.substr(0, baseURL.lastIndexOf("/"));
     }
 
-    if (!/^\//.test(conf.url)) {
-      conf.url = `/${conf.url}`;
+    if (!/^\//.test(opts.url)) {
+      opts.url = `/${opts.url}`;
     }
 
     return wx.request({
-      url: `${baseURL}${conf.url}`,
-      method: conf.method.toUpperCase(),
-      data: conf.data,
+      url: `${baseURL}${opts.url}`,
+      method: opts.method,
+      data: opts.data,
       header: {
         "Content-Type": "json",
-        ...conf.header
+        ...opts.header
       },
       dataType: 'json',
       success: function (res) {
@@ -27,12 +27,19 @@ function createAPI(baseURL) {
           return;
         }
 
-        if (typeof conf.success === 'function') {
-          conf.success(res.data);
+        if (typeof opts.success === 'function') {
+          opts.success(res.data);
         }
       },
       fail: function (res) {
-
+        if (typeof opts.fail === 'function') {
+          opts.fail(res);
+        }
+      },
+      complete: function (res) {
+        if (typeof opts.complete === 'function') {
+          opts.complete();
+        }
       }
     })
   };

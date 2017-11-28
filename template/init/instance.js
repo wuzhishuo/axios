@@ -8,4 +8,4 @@ const baseUrl = {
   prod: ''
 }[config.env || 'mock'];
 
-export default createAPI(baseUrl);
+module.exports= createAPI(baseUrl)

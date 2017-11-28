@@ -3,16 +3,13 @@ var util = require('{{$$.relative("util")}}');
 
 var convertRESTAPI = util.convertRESTAPI;
 
-<% _.forEach(data.mocks, function (mock) { %>/** {{mock.description}} */
-  function { { mock.description } }(opts) {
-    return instance({
-      method: '{{mock.method}}',
-      url: <% if($$.isREST(mock.url)) {%> convertRESTAPI('{{mock.url}}', opts) <%} else {%> '{{mock.url}}' <% } %>,
-      opts: opts
-  });
+<% _.forEach(data.mocks, function (mock) { %>
+  function {{ mock.description }}(opts) {
+    opts.method = '{{mock.method.toUpperCase()}}';
+    <% if($$.isREST(mock.url)) {%>opts.url=convertRESTAPI('{{mock.url}}', opts.data) <%} else {%> opts.url='{{mock.url}}' <% } %>;
+    return instance(opts);
 }
 
 <% }) %> module.exports= {<% _.forEach(data.mocks, function (mock, i) { %>
-  {{ mock.description }
-}: {{ mock.description }} <% if (data.mocks.length - 1 !== i) { %>,<% } %><% }) %>
+  {{ mock.description }} <% if (data.mocks.length - 1 !== i) { %>,<% } %><% }) %>
 };
